@@ -1,0 +1,17 @@
+<div class="wrapper">
+  <div class="grid">
+    <p>Service Worker are {{navigator.serviceWorker ? 'enabled' : 'disabled'}} in this browser</p>
+    <p></p>
+
+    <mat-form-field>
+      <input [(ngModel)]="title" matInput placeholder="Title">
+    </mat-form-field>
+    <mat-form-field>
+      <input [(ngModel)]="body" matInput placeholder="Body">
+    </mat-form-field>
+
+    <button *ngIf="!isSubscribed()" (click)="setupPush()" mat-button>subscribe</button>
+    <button *ngIf="isSubscribed()" (click)="deletePush()" mat-button>unsubscribe</button>
+    <button (click)="sendNotifications()" mat-button>send</button>
+  </div>
+</div>
