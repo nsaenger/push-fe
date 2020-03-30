@@ -1,27 +1,39 @@
-# PushFrontend
+## Push Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.0.7.
+#### Wichtige Dateien
 
-## Development server
+##### sw.js
+```javascript
+// Needed to let browsers know about new service-worker
+const VERSION = '1.0.20';
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+self.addEventListener('push', function(event) {
+  const data = JSON.parse(event.data.text()).notification;
+  event.waitUntil(self.registration.showNotification(data.title, data));
+});
+```
 
-## Code scaffolding
+##### root.component.ts
+```javascript
+// Show push request dialog and send subscription to backend
+setupPush() {
+    const key = 'BEl62iUYgUivxIkv69yViEuiBIa-Ib9-SkvMeAtA3LFgDzkrxZJjSgSnfckjBJuBkr3qBUYIHBQFLXYp5Nksh8U';
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+    this.swPush.requestSubscription({ serverPublicKey: key }).then(sub => {
+        this.http.post('http://localhost:30000/push/add', { subscription: sub }).subscribe();
+      });
+  }
 
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+// Trigger a notification from front end
+public sendNotifications() {
+this.http.post('http://localhost:30000/push/send', {
+  notification: {
+    title: this.title,
+    body: this.body,
+    icon: './assets/img/angular.png',
+    data: 'additional data',
+  },
+}).subscribe(console.log, console.error);
+}
+```
+  

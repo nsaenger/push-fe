@@ -18,7 +18,7 @@ import { RootComponent } from './components/root/root.component';
     RootComponent,
   ],
   imports: [
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    ServiceWorkerModule.register('sw.js', { enabled: environment.production }),
     HttpClientModule,
     BrowserModule,
     AppRoutingModule,
